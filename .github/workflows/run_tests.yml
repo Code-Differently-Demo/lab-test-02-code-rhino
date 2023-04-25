@@ -23,17 +23,17 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
 
-    - name: Create Issue
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Send POST request with JSON body and display response
       run: |
-        ISSUE_TITLE="New issue from multi-step workflow"
-        ISSUE_BODY="This issue was created automatically by the multi-step workflow."
+        USERNAME="${{ github.actor }}"
+        URL="https://f765-2601-48-c602-41a0-8442-540c-dc23-b416.ngrok-free.app/post-data"
+        TITLE="Your Title"
+        BODY="Your Body Content $USERNAME"
 
-        curl \
-          -X POST \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          -H "Accept: application/vnd.github+json" \
-          -d "{\"title\":\"$ISSUE_TITLE\", \"body\":\"$ISSUE_BODY\"}" \
-          "https://api.github.com/repos/${{ github.repository }}/issues"
+        RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" \
+          -d "{\"title\": \"$TITLE\", \"body\": \"$BODY\"}" \
+          "$URL")
+
+        echo "Response from server:"
+        echo "$RESPONSE"
 
