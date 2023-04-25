@@ -22,30 +22,16 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    - name: Create issue and leave a comment
+    - name: Create issue with body Wutang
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        ISSUE_TITLE="New push to main branch"
-        ISSUE_BODY="A new push has been made to the main branch."
-        PR_COMMENT="This issue has been created automatically by GitHub Actions."
+        ISSUE_TITLE="New Wutang Issue"
+        ISSUE_BODY="Wutang"
 
-        # Create issue
-        ISSUE_RESPONSE=$(curl \
-          -s \
-          -X POST \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          -H "Accept: application/vnd.github+json" \
-          -d "{\"title\":\"$ISSUE_TITLE\", \"body\":\"$ISSUE_BODY\"}" \
-          "https://api.github.com/repos/${{ github.repository }}/issues")
-
-        # Get issue number from the response
-        ISSUE_NUMBER=$(echo "$ISSUE_RESPONSE" | jq '.number')
-
-        # Add comment to the created issue
         curl \
           -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github+json" \
-          -d "{\"body\":\"$PR_COMMENT\"}" \
-          "https://api.github.com/repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments"
+          -d "{\"title\":\"$ISSUE_TITLE\", \"body\":\"$ISSUE_BODY\"}" \
+          "https://api.github.com/repos/${{ github.repository }}/issues"
